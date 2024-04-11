@@ -1,0 +1,1 @@
+CTRL + F12 : show all method in class

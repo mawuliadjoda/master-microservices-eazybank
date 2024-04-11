@@ -111,14 +111,22 @@ public class AccountsController {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "20O",
+                    responseCode = "200",
                     description = "HTTP Status OK"
             ),
             @ApiResponse(
-                    responseCode = "50O",
-                    description = "HTTP Status Internal Server Error"
+                    responseCode = "417",
+                    description = "Expectation Failed"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
             )
-    })
+    }
+    )
 
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDto> deleteAccountDetails(@RequestParam

@@ -97,3 +97,8 @@ docker run -d -p LOCAL_PORT:CONTAINER_PORT adjodamawuli/accounts:s4
     lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker run -d -p 8081:8080 adjodamawuli/accounts:s4
     5bb21448e9c62b6aa525dc8f5b9f4bd3c93415db0ddf431675e547d7248233a2
 
+
+7. push image to dockerhub
+
+         docker login
+         lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker image push docker.io/adjodamawuli/accounts:s4

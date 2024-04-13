@@ -102,3 +102,10 @@ docker run -d -p LOCAL_PORT:CONTAINER_PORT adjodamawuli/accounts:s4
 
          docker login
          lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker image push docker.io/adjodamawuli/accounts:s4
+8. Run all container using docker compose
+
+       lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose up -d
+
+9.  stop all container
+
+        lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose down

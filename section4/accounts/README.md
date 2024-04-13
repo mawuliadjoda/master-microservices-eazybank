@@ -106,6 +106,31 @@ docker run -d -p LOCAL_PORT:CONTAINER_PORT adjodamawuli/accounts:s4
 
        lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose up -d
 
-9.  stop all container
+9.  stop and remove  all container
 
         lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose down
+
+10.  stop (stop) all container
+
+         lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose stop
+
+11. more command
+
+          lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose up -d
+
+             [+] Running 3/3
+             ✔ Container loans-ms     Started                                                                                                                                                      0.0s
+             ✔ Container cards-ms     Started                                                                                                                                                      0.0s
+             ✔ Container accounts-ms  Started                                                                                                                                                      0.0s
+          lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose stop
+
+             [+] Stopping 3/3
+             ✔ Container accounts-ms  Stopped                                                                                                                                                      0.8s
+             ✔ Container loans-ms     Stopped                                                                                                                                                      1.0s
+             ✔ Container cards-ms     Stopped                                                                                                                                                      0.6s
+          lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section4/accounts$ docker compose start
+
+             [+] Running 3/3
+             ✔ Container cards-ms     Started                                                                                                                                                      0.5s
+             ✔ Container accounts-ms  Started                                                                                                                                                      0.2s
+             ✔ Container loans-ms     Started

@@ -31,3 +31,6 @@ build/
 !**/src/test/**/build/
 
 ~WRL1188.tmp
+~$croservices-deep-dive-section5_deep_dive_on_cloud_native.docx
+~WRL1515.tmp
+ 

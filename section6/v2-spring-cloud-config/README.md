@@ -19,3 +19,10 @@ https://console.hookdeck.com/
 we will get https url to configure our webhook in github  
 https://4847-2001-861-45c1-9250-34c2-3f64-1d41-bb9c.ngrok-free.app/monitor 
 to configure hebhook on github to go setting of https://github.com/mawuliadjoda/eazybank-config/settings
+
+
+
+# configserver liveness and readiness 
+http://localhost:8071/actuator/health
+http://localhost:8071/actuator/health/liveness
+http://localhost:8071/actuator/health/readiness

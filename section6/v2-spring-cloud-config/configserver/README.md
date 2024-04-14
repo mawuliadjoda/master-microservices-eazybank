@@ -10,7 +10,7 @@ http://localhost:8071/cards/prod
 http://localhost:8071/loans/prod
 http://localhost:8071/loans/qa
 
-
+e0fa14e6039e
 
 # when using private repo => https://docs.spring.io/spring-cloud-config/reference/server/environment-repository/git-backend.html
 https://docs.spring.io/spring-cloud-config/reference/server/environment-repository/git-backend.html

@@ -46,3 +46,10 @@ http://localhost:8071/actuator/health/readiness
     docker image push docker.io/adjodamawuli/loans:s6
     docker image push docker.io/adjodamawuli/cards:s6
     docker image push docker.io/adjodamawuli/configserver:s6
+
+# run all microservices 
+
+    lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section6/v2-spring-cloud-config/docker-compose/default$ docker compose up -d
+
+# stop all docker container (stop and remove)
+    lefort@ADJODA:/mnt/d/dev/java/microservices/master-microservices-udemy/section6/v2-spring-cloud-config/docker-compose/default$ docker compose down

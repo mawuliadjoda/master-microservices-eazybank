@@ -18,6 +18,19 @@ spring:
           timeout: 5
           clone-on-start: true
           force-pull: true
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
+
+# enable management endpoint: invoke automatically the bus refresh API path
+#  webhook on github
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 encrypt:
   key: "45D81EC1EF61DF9AD8D3E5BB397F9"

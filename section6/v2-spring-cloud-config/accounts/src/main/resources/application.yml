@@ -21,3 +21,11 @@ spring:
     show-sql: true
   config:
     import: "optional:configserver:http://localhost:8071/"
+
+
+# enable and expose all management  actuator endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

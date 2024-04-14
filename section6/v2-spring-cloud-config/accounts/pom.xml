@@ -92,6 +92,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
@@ -102,6 +103,7 @@
                     </to>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

@@ -9,3 +9,11 @@
 
 In real production, MySQL DBAs will attach a storage or volume where the data can be stored by the MySQL container. 
 That's why in real prod MySQL containers, we never lost data even if we delete or replace the MySQL container
+
+
+
+
+
+
+      docker compose up or docker compose up -d
+      docker compose down

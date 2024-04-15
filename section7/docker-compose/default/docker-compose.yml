@@ -1,19 +1,78 @@
 services:
-  rabbit:
-    image: rabbitmq:3.13-management
-    hostname: rabbitmq
+  #rabbit:
+  #  image: rabbitmq:3.13-management
+  #  hostname: rabbitmq
+  #  ports:
+  #    - "5672:5672"
+  #    - "15672:15672"
+  #  healthcheck:
+  #    test: rabbitmq-diagnostics check_port_connectivity
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 10
+  #    start_period: 5s
+  #  extends:
+  #    file: common-config.yml
+  #    service: network-deploy-service
+
+
+  accountsdb:
+    image: mysql
+    container_name: accountsdb
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 3306:3306
     healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity
-      interval: 10s
-      timeout: 5s
+      test: ["CMD","mysqladmin","ping","-h","localhost"]
+      timeout: 10s
       retries: 10
-      start_period: 5s
+      interval: 10s
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: accountsdb
     extends:
       file: common-config.yml
       service: network-deploy-service
+
+
+  loansdb:
+    image: mysql
+    container_name: loansdb
+    ports:
+      - 3307:3306
+    healthcheck:
+      test: [ "CMD","mysqladmin","ping","-h","localhost" ]
+      timeout: 10s
+      retries: 10
+      interval: 10s
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: loansdb
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+
+  cardsdb:
+    image: mysql
+    container_name: cardsdb
+    ports:
+      - 3308:3306
+    healthcheck:
+      test: [ "CMD","mysqladmin","ping","-h","localhost" ]
+      timeout: 10s
+      retries: 10
+      interval: 10s
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cardsdb
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+
 
   configserver:
     image: "adjodamawuli/configserver:s6"
@@ -38,9 +97,6 @@ services:
     container_name: accounts-ms
     ports:
       - "8080:8080"
-    depends_on:
-      configserver:
-        condition: service_healthy
     # whenever we are trying to provide an environment variable we need to follow a syntax which is
     # converting all the letters to capital letters and replacing that dot with underscore
     # import: "optional:configserver:http://localhost:8071/" => we copy this from applicaion.yml from one microservices
@@ -48,6 +104,12 @@ services:
     # the prefix will always be configserver
     environment:
       SPRING_APPLICATION_NAME: "accounts"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
+    depends_on:
+      accountsdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -58,9 +120,7 @@ services:
     container_name: loans-ms
     ports:
       - "8090:8090"
-    depends_on:
-      configserver:
-        condition: service_healthy
+
     # whenever we are trying to provide an environment variable we need to follow a syntax which is
     # converting all the letters to capital letters and replacing that dot with underscore
     # import: "optional:configserver:http://localhost:8071/" => we copy this from applicaion.yml from one microservices
@@ -68,6 +128,12 @@ services:
     # the prefix will always be configserver
     environment:
       SPRING_APPLICATION_NAME: "loans"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://loansdb:3307/loansdb"
+    depends_on:
+      loansdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -77,9 +143,6 @@ services:
     container_name: cards-ms
     ports:
       - "9000:9000"
-    depends_on:
-      configserver:
-        condition: service_healthy
 
     # whenever we are trying to provide an environment variable we need to follow a syntax which is
     # converting all the letters to capital letters and replacing that dot with underscore
@@ -88,6 +151,12 @@ services:
     # the prefix will always be configserver
     environment:
       SPRING_APPLICATION_NAME: "cards"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3308/cardsdb"
+    depends_on:
+      cardsdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config

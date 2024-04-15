@@ -38,6 +38,9 @@ services:
     container_name: accounts-ms
     ports:
       - "8080:8080"
+    depends_on:
+      configserver:
+        condition: service_healthy
     # whenever we are trying to provide an environment variable we need to follow a syntax which is
     # converting all the letters to capital letters and replacing that dot with underscore
     # import: "optional:configserver:http://localhost:8071/" => we copy this from applicaion.yml from one microservices
@@ -55,7 +58,9 @@ services:
     container_name: loans-ms
     ports:
       - "8090:8090"
-
+    depends_on:
+      configserver:
+        condition: service_healthy
     # whenever we are trying to provide an environment variable we need to follow a syntax which is
     # converting all the letters to capital letters and replacing that dot with underscore
     # import: "optional:configserver:http://localhost:8071/" => we copy this from applicaion.yml from one microservices
@@ -72,6 +77,9 @@ services:
     container_name: cards-ms
     ports:
       - "9000:9000"
+    depends_on:
+      configserver:
+        condition: service_healthy
 
     # whenever we are trying to provide an environment variable we need to follow a syntax which is
     # converting all the letters to capital letters and replacing that dot with underscore

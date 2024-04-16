@@ -19,3 +19,12 @@ http://localhost:8070/eureka/apps
     docker image push docker.io/adjodamawuli/loans:s8
     docker image push docker.io/adjodamawuli/cards:s8
     docker image push docker.io/adjodamawuli/configserver:s8
+
+
+# Run container
+
+     docker compose up -d
+
+# Stop container
+  
+     docker compose down

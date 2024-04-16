@@ -1,28 +1,9 @@
 services:
-  rabbit:
-    image: rabbitmq:3.13-management
-    hostname: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 5s
-    extends:
-      file: common-config.yml
-      service: network-deploy-service
-
   configserver:
-    image: "adjodamawuli/configserver:s6"
+    image: "adjodamawuli/configserver:s8"
     container_name: configserver-ms
     ports:
       - "8071:8071"
-    depends_on:
-      rabbit:
-        condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
@@ -33,65 +14,89 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  eurekaserver:
+    image: "adjodamawuli/eurekaserver:s8"
+    container_name: eurekaserver-ms
+    ports:
+      - "8070:8070"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+
   accounts:
-    image: "adjodamawuli/accounts:s6"
+    image: "adjodamawuli/accounts:s8"
     container_name: accounts-ms
     ports:
       - "8080:8080"
     depends_on:
       configserver:
         condition: service_healthy
-    # whenever we are trying to provide an environment variable we need to follow a syntax which is
-    # converting all the letters to capital letters and replacing that dot with underscore
-    # import: "optional:configserver:http://localhost:8071/" => we copy this from applicaion.yml from one microservices
-    # we replace localhost with the configserver service name
-    # the prefix will always be configserver
+      eurekaserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "accounts"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
-
+      service: microservice-eureka-config
 
   loans:
-    image: "adjodamawuli/loans:s6"
+    image: "adjodamawuli/loans:s8"
     container_name: loans-ms
     ports:
       - "8090:8090"
     depends_on:
       configserver:
         condition: service_healthy
-    # whenever we are trying to provide an environment variable we need to follow a syntax which is
-    # converting all the letters to capital letters and replacing that dot with underscore
-    # import: "optional:configserver:http://localhost:8071/" => we copy this from applicaion.yml from one microservices
-    # we replace localhost with the configserver service name
-    # the prefix will always be configserver
+      eurekaserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "loans"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
+
+  loans1:
+    image: "adjodamawuli/loans:s8"
+    container_name: loans-ms1
+    ports:
+      - "8091:8090"
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
 
   cards:
-    image: "adjodamawuli/cards:s6"
+    image: "adjodamawuli/cards:s8"
     container_name: cards-ms
     ports:
       - "9000:9000"
     depends_on:
       configserver:
         condition: service_healthy
-
-    # whenever we are trying to provide an environment variable we need to follow a syntax which is
-    # converting all the letters to capital letters and replacing that dot with underscore
-    # import: "optional:configserver:http://localhost:8071/" => we copy this from applicaion.yml from one microservices
-    # we replace localhost with the configserver service name
-    # the prefix will always be configserver
+      eurekaserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "cards"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
-
+      service: microservice-eureka-config
 
 networks:
   eazybank:

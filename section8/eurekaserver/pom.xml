@@ -11,6 +11,7 @@
 	<groupId>com.eazybytes</groupId>
 	<artifactId>eurekaserver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>eurekaserver</name>
 	<description>Service Discovery agent for Eazy Bank microservices</description>
 	<properties>
@@ -51,10 +52,18 @@
 
 	<build>
 		<plugins>
+
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.1</version>
+				<configuration>
+					<to>
+						<image>adjodamawuli/${project.artifactId}:s8</image>
+					</to>
+				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 

@@ -47,3 +47,20 @@ Here's the response from the token endpoint! The response includes the access to
 # https://www.keycloak.org/docs-api/latest/rest-api/index.html
 
 http://localhost:7080/realms/master/.well-known/openid-configuration
+
+
+
+#
+mvn compile jib:dockerBuild
+docker login
+docker image push docker.io/adjodamawuli/accounts:s9
+docker image push docker.io/adjodamawuli/loans:s9
+docker image push docker.io/adjodamawuli/cards:s9
+docker image push docker.io/adjodamawuli/configserver:s9
+docker image push docker.io/adjodamawuli/gatewayserver:s9
+docker image push docker.io/adjodamawuli/eurekaserver:s9
+
+
+
+docker compose up
+docker compose down

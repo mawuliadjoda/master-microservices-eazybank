@@ -29,6 +29,12 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+master-microservices-udemy-jump/section13/docker-compose/default/.data/minio/.minio.sys/buckets/.bloomcycle.bin/xl.meta
+*minio*
+
+
+master-microservices-udemy-jump/section14-kafka/kafka_2.13-3.7.0.tgz
+master-microservices-udemy-jump/section14-kafka/kafka_2.13-3.7.0
 
 ~WRL1188.tmp
 ~$croservices-deep-dive-section5_deep_dive_on_cloud_native.docx
@@ -40,4 +46,5 @@ build/
 ~WRL0499.tmp
 ~$croservices-deep-dive-section9.docx
 ~$croservices-deep-dive-section13.docx
+~$croservices-deep-dive-section14.docx
 ~WRL1147.tmp

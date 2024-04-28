@@ -181,3 +181,234 @@ service/gatewayserver created
 
 # Before test our microservices in Postman we need to create client detail (Client ID: eazybank-callcenter-cc with roleS: ACCOUNTS, LOANS, CARDS) in  keycloak 
 http://localhost:7080/
+
+
+# Self healing
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get replicaset
+NAME                                  DESIRED   CURRENT   READY   AGE
+accounts-deployment-68748f4f5         1         1         1       25m
+cards-deployment-8476f7c94b           1         1         1       24m
+configserver-deployment-6fd786f5fd    0         0         0       11h
+configserver-deployment-769c967468    1         1         1       28m
+eurekaserver-deployment-78484bf6f5    1         1         1       26m
+gatewayserver-deployment-6f94f8cb9f   1         1         1       20m
+keycloak-5df7dcfd5                    1         1         1       31m
+loans-deployment-9b48db958            1         1         1       24m
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get pods
+NAME                                        READY   STATUS    RESTARTS   AGE
+accounts-deployment-68748f4f5-rsx62         1/1     Running   0          25m
+cards-deployment-8476f7c94b-sh959           1/1     Running   0          24m
+configserver-deployment-769c967468-kww8q    1/1     Running   0          28m
+eurekaserver-deployment-78484bf6f5-5rnk7    1/1     Running   0          27m
+gatewayserver-deployment-6f94f8cb9f-v89qn   1/1     Running   0          21m
+keycloak-5df7dcfd5-npvgx                    1/1     Running   0          31m
+loans-deployment-9b48db958-jkwjl            1/1     Running   0          25m
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl apply -f 5_accounts.yml
+deployment.apps/accounts-deployment configured
+service/accounts unchanged
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get replicaset
+NAME                                  DESIRED   CURRENT   READY   AGE
+accounts-deployment-68748f4f5         2         2         2       26m
+cards-deployment-8476f7c94b           1         1         1       25m
+configserver-deployment-6fd786f5fd    0         0         0       11h
+configserver-deployment-769c967468    1         1         1       29m
+eurekaserver-deployment-78484bf6f5    1         1         1       27m
+gatewayserver-deployment-6f94f8cb9f   1         1         1       21m
+keycloak-5df7dcfd5                    1         1         1       31m
+loans-deployment-9b48db958            1         1         1       25m
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get pods
+NAME                                        READY   STATUS    RESTARTS   AGE
+accounts-deployment-68748f4f5-rsx62         1/1     Running   0          26m
+accounts-deployment-68748f4f5-wxwqn         1/1     Running   0          18s
+cards-deployment-8476f7c94b-sh959           1/1     Running   0          25m
+configserver-deployment-769c967468-kww8q    1/1     Running   0          29m
+eurekaserver-deployment-78484bf6f5-5rnk7    1/1     Running   0          27m
+gatewayserver-deployment-6f94f8cb9f-v89qn   1/1     Running   0          21m
+keycloak-5df7dcfd5-npvgx                    1/1     Running   0          32m
+loans-deployment-9b48db958-jkwjl            1/1     Running   0          26m
+
+
+#
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete pod accounts-deployment-68748f4f5-wxwqn
+pod "accounts-deployment-68748f4f5-wxwqn" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get replicaset
+NAME                                  DESIRED   CURRENT   READY   AGE
+accounts-deployment-68748f4f5         2         2         2       28m
+cards-deployment-8476f7c94b           1         1         1       28m
+configserver-deployment-6fd786f5fd    0         0         0       11h
+configserver-deployment-769c967468    1         1         1       31m
+eurekaserver-deployment-78484bf6f5    1         1         1       30m
+gatewayserver-deployment-6f94f8cb9f   1         1         1       24m
+keycloak-5df7dcfd5                    1         1         1       34m
+loans-deployment-9b48db958            1         1         1       28m
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get pods
+NAME                                        READY   STATUS    RESTARTS   AGE
+accounts-deployment-68748f4f5-pt8rw         1/1     Running   0          27s
+accounts-deployment-68748f4f5-rsx62         1/1     Running   0          28m
+cards-deployment-8476f7c94b-sh959           1/1     Running   0          28m
+configserver-deployment-769c967468-kww8q    1/1     Running   0          32m
+eurekaserver-deployment-78484bf6f5-5rnk7    1/1     Running   0          30m
+gatewayserver-deployment-6f94f8cb9f-v89qn   1/1     Running   0          24m
+keycloak-5df7dcfd5-npvgx                    1/1     Running   0          34m
+loans-deployment-9b48db958-jkwjl            1/1     Running   0          28m
+
+
+# 
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get events --sort-by=.metadata.creationTimestamp
+LAST SEEN   TYPE     REASON              OBJECT                                           MESSAGE
+37m         Normal   Scheduled           pod/keycloak-5df7dcfd5-npvgx                     Successfully assigned default/keycloak-5df7dcfd5-npvgx to docker-desktop
+37m         Normal   ScalingReplicaSet   deployment/keycloak                              Scaled up replica set keycloak-5df7dcfd5 to 1
+
+6m2s        Normal   ScalingReplicaSet   deployment/accounts-deployment                   Scaled up replica set accounts-deployment-68748f4f5 to 2 from 1
+6m1s        Normal   Created             pod/accounts-deployment-68748f4f5-wxwqn          Created container accounts
+6m1s        Normal   Started             pod/accounts-deployment-68748f4f5-wxwqn          Started container accounts
+6m1s        Normal   Pulled              pod/accounts-deployment-68748f4f5-wxwqn          Container image "adjodamawuli/accounts:s12" already present on machine
+3m38s       Normal   Killing             pod/accounts-deployment-68748f4f5-wxwqn          Stopping container accounts
+3m38s       Normal   SuccessfulCreate    replicaset/accounts-deployment-68748f4f5         Created pod: accounts-deployment-68748f4f5-pt8rw
+3m37s       Normal   Scheduled           pod/accounts-deployment-68748f4f5-pt8rw          Successfully assigned default/accounts-deployment-68748f4f5-pt8rw to docker-desktop
+3m37s       Normal   Started             pod/accounts-deployment-68748f4f5-pt8rw          Started container accounts
+3m37s       Normal   Created             pod/accounts-deployment-68748f4f5-pt8rw          Created container accounts
+3m37s       Normal   Pulled              pod/accounts-deployment-68748f4f5-pt8rw          Container image "adjodamawuli/accounts:s12" already present on machine
+
+
+# scale using command line 
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl scale deployment accounts-deployment --replicas=1
+deployment.apps/accounts-deployment scaled
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get pods
+NAME                                        READY   STATUS    RESTARTS   AGE
+accounts-deployment-68748f4f5-rsx62         1/1     Running   0          43m
+cards-deployment-8476f7c94b-sh959           1/1     Running   0          42m
+configserver-deployment-769c967468-kww8q    1/1     Running   0          46m
+eurekaserver-deployment-78484bf6f5-5rnk7    1/1     Running   0          44m
+gatewayserver-deployment-6f94f8cb9f-v89qn   1/1     Running   0          38m
+keycloak-5df7dcfd5-npvgx                    1/1     Running   0          49m
+loans-deployment-9b48db958-jkwjl            1/1     Running   0          42m
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get replicaset
+NAME                                  DESIRED   CURRENT   READY   AGE
+accounts-deployment-68748f4f5         1         1         1       44m
+cards-deployment-8476f7c94b           1         1         1       43m
+configserver-deployment-6fd786f5fd    0         0         0       11h
+configserver-deployment-769c967468    1         1         1       47m
+eurekaserver-deployment-78484bf6f5    1         1         1       45m
+gatewayserver-deployment-6f94f8cb9f   1         1         1       39m
+keycloak-5df7dcfd5                    1         1         1       50m
+loans-deployment-9b48db958
+
+
+# Automatic rollout => deploy gatewayserver:s11 
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl describe pod gatewayserver-deployment-6f94f8cb9f
+
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl set image deployment gatewayserver-deployment gatewayserver=eazybytes/gatewayserver:s11 --record
+Flag --record has been deprecated, --record will be removed in the future
+deployment.apps/gatewayserver-deployment image updated
+
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get event --sort-by=.metadata.creationTimestamp
+
+#
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl rollout history deployment gatewayserver-deployment
+deployment.apps/gatewayserver-deployment
+REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl.exe set image deployment gatewayserver-deployment gatewayserver=eazybytes/gatewayserver:s111 --record=true
+3         kubectl.exe set image deployment gatewayserver-deployment gatewayserver=eazybytes/gatewayserver:s11 --record=true
+
+
+# rollout to revision=1
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl rollout undo deployment gatewayserver-deployment --to-revision=1
+deployment.apps/gatewayserver-deployment rolled back
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get pods
+NAME                                        READY   STATUS    RESTARTS   AGE
+accounts-deployment-68748f4f5-rsx62         1/1     Running   0          61m
+cards-deployment-8476f7c94b-sh959           1/1     Running   0          60m
+configserver-deployment-769c967468-kww8q    1/1     Running   0          64m
+eurekaserver-deployment-78484bf6f5-5rnk7    1/1     Running   0          63m
+gatewayserver-deployment-6f94f8cb9f-hn6zr   1/1     Running   0          22s
+keycloak-5df7dcfd5-npvgx                    1/1     Running   0          67m
+loans-deployment-9b48db958-jkwjl            1/1     Running   0          61m
+
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl describe pod gatewayserver-deployment-6f94f8cb9f-hn6zr
+	
+	Containers:
+  gatewayserver:
+    Container ID:   docker://d0f8448eef1f2be6bbfc7d0b3ecf7682209ab43664a9343389fc9c2b7d27e696
+    Image:          adjodamawuli/gatewayserver:s12
+    Image ID:       docker-pullable://adjodamawuli/gatewayserver@sha256:c04bed6527b74a70a54aa6996b7748d4c0635e89581ea2c906a49a27e5e55b34
+	
+	
+	
+# Service types 
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get services
+NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+accounts        LoadBalancer   10.97.193.111    localhost     8080:32209/TCP   82m
+cards           LoadBalancer   10.111.158.247   localhost     9000:30408/TCP   81m
+configserver    LoadBalancer   10.110.73.236    localhost     8071:32237/TCP   12h
+eurekaserver    LoadBalancer   10.104.53.88     localhost     8070:31763/TCP   83m
+gatewayserver   LoadBalancer   10.101.96.217    localhost     8072:30606/TCP   77m
+keycloak        LoadBalancer   10.110.23.99     localhost     7080:31982/TCP   88m
+kubernetes      ClusterIP      10.96.0.1        <none>        443/TCP          22d
+loans           LoadBalancer   10.111.16.168    localhost     8090:30569/TCP   81m
+
+
+#
+LoadBalancer => that means anyone can access that service at the given port number on the EXTERNAL-IP
+curl http://localhost:8080/api/contact-info
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> curl http://localhost:8080/api/contact-info
+
+
+StatusCode        : 200
+StatusDescription :
+Content           : {"message":"Hey, welcome to EazyBank accounts related webhook APIs","contactDetails":{"name":"Reine Aishwarya - Product
+                    Owner","email":"aishwarya@eazybank.com"},"onCallSupport":["(453) 392-4829","(236...
+RawContent        : HTTP/1.1 200
+
+
+#we change service type to ClusterIP  in acccounts.yml file 
+
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl apply -f 5_accounts.yml
+	deployment.apps/accounts-deployment configured
+	service/accounts configured
+	
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl get services
+	NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+	accounts        ClusterIP      10.97.193.111    <none>        8080/TCP         92m
+	cards           LoadBalancer   10.111.158.247   localhost     9000:30408/TCP   91m
+	configserver    LoadBalancer   10.110.73.236    localhost     8071:32237/TCP   12h
+	eurekaserver    LoadBalancer   10.104.53.88     localhost     8070:31763/TCP   94m
+	gatewayserver   LoadBalancer   10.101.96.217    localhost     8072:30606/TCP   88m
+	keycloak        LoadBalancer   10.110.23.99     localhost     7080:31982/TCP   98m
+	kubernetes      ClusterIP      10.96.0.1        <none>        443/TCP          22d
+	loans           LoadBalancer   10.111.16.168    localhost     8090:30569/TCP   92m
+	PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> curl http://localhost:8080/api/contact-info
+	curl : Unable to connect to the remote server
+	At line:1 char:1
+	+ curl http://localhost:8080/api/contact-info
+
+ ==> we cannot reach accounts service because service type is ClusterIP
+
+
+
+# Delete deployments
+
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 8_gateway.yml
+deployment.apps "gatewayserver-deployment" deleted
+service "gatewayserver" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 7_cards.yml
+deployment.apps "cards-deployment" deleted
+service "cards" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 6_loans.yml
+deployment.apps "loans-deployment" deleted
+service "loans" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 5_accounts.yml
+deployment.apps "accounts-deployment" deleted
+service "accounts" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 4_eurekaserver.yml
+deployment.apps "eurekaserver-deployment" deleted
+service "eurekaserver" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 3_configserver.yml
+deployment.apps "configserver-deployment" deleted
+service "configserver" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 2_configmaps.yaml
+configmap "eazybank-configmap" deleted
+PS D:\dev\java\microservices\master-microservices-udemy\master-microservices-udemy-jump\section15-k8s\kubernetes> kubectl delete -f 1_keycloak.yml
+deployment.apps "keycloak" deleted
+service "keycloak" deleted

@@ -1,0 +1,49 @@
+https://www.youtube.com/watch?v=-EGiEODV20U
+
+Monolitique:
+
+Tyny update and feature always need a full deployment
+
+un seul language de programmation (
+ => si je suis un dev Python, je suis obligé d'apprendre Java
+  => les developpeur ne sont pas libre de developper avec le language de programmation qu'il leur tient à coeur
+  qui repondrait à la partie du code qu'ils ont à écrire
+)
+
+deployer toute l'application sur la meme machine
+Mise à jour d'un module ==> rendre indisponible toute l'application et redéployer toute
+
+Monter en version
+
+
+
+Microservices:
+Pour un besoin d'agilité et de flexibilité on se dit: 
+le module monolitique, on va le casser en petit module qui auront une seule fonction, avec quel avantage ? 
+
+=> C'est que maintenant on peut se permettre de déployer chacun des modules sur des machines différentes
+	et si on perd un serveur alors ça n'impacte pas forcément les autres modules
+	Si on souhaite par exemple mettre à jour un module, il suffira de venir remplacer le module développé 
+		  avec la nouvelle version
+    Si nous sommes dans un système de scalabilité, c'est à dire l'application est extrêmement sollicité alors
+		grace aux architectures microservices, on pourra déployer le micro service qui est demandé et on mettra
+		un load balanceur devant pour pouvoir gérer la répartition de charge.
+		
+==> donc on a l'aspect flexibilité et agilité, résilience (donc en cas de problème) et scalabilité pour gérer la monté en charge
+
+==> les architectures microservices sont aussi venu pour apporter une solution pour permettre aussi la réutilisation	
+	d'un microservice (ex: authentification)
+	
+==> C'est pour cela que les applications sont entrain d'être réachitecturer pour répondre à ces besoins d'agilité,
+	de dynamisme dans l'objectif que lorsqu'on ait une mise à jour à faire, qu'on ne rende pas indisponible toute l'application
+	mais juste que l'on remplace le microservice en question
+
+
+Easy to develop, test and deployer
+Increase agility
+Ability to scale horizontally
+parallel development
+Modelled around a Business Domain
+
+
+==> Prioritize the independent deployability
